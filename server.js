@@ -63,11 +63,30 @@ router.route('/employees')
 
 	//get all employees
 	.get(function(req, res) {
-	    client.hgetall("employee", function(err, obj) {
-	        if (err) {
-	            res.send(err);
-	        }
-	    });
+
+		var tokenKey = req.headers.tokenkey;
+		var tokenValue = req.headers.tokenvalue;
+
+		if (tokenKey !== undefined && tokenValue !== undefined) {
+
+			client.hget("token", tokenKey, function(err, obj) {
+
+				
+
+		    	if (obj == tokenValue) {
+		    		client.hgetall("employee", function(err, obj) {
+		    		    if (err) {
+		    		        res.send(err);
+		    		    }
+		    		    res.send(obj);
+		    		});
+		    	} else {
+					res.send("client does not have active token");
+		    	}
+	    	});
+		} else {
+			res.send("client does not have active token");
+		}
 	});
 
 
@@ -110,15 +129,16 @@ router.route('/employees/:key')
 router.route('/tokens/:key')
 	//get employee with key
 	.get(function(req, res) {
-  //    var tokenBoolean = isTokenActive(req.params.key, "123");
-  //   	if (tokenBoolean) {
-  //   		console.log("second yes");
-  //   		res.send("active");
-  //   	} else {
-  //   		console.log("second no");
-  //   		res.send("non-active");
-  //   	}	
-  		console.log(req.header);
+        //    var tokenBoolean = isTokenActive(req.params.key, "123");
+        //   	if (tokenBoolean) {
+        //   		console.log("second yes");
+        //   		res.send("active");
+        //   	} else {
+        //   		console.log("second no");
+        //   		res.send("non-active");
+        //   	}
+
+  		console.log(req.headers);
   		client.hget("token", req.params.key, function(err, obj) {
 	    	if (obj == "123") {
 	    		res.send("active");
@@ -130,7 +150,6 @@ router.route('/tokens/:key')
 	})
 
 	.post(function(req, res){
-		console.log("post request");
 		console.log(req.headers.token);
 	});
 
