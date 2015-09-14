@@ -36,7 +36,23 @@ var router = express.Router();
 // middleware to use for all requests
 router.use(function(req, res, next) {
     console.log('Something is happening.');
-    next();
+
+	var tokenKey = req.headers.tokenkey;
+	var tokenValue = req.headers.tokenvalue;
+
+	if (tokenKey !== undefined && tokenValue !== undefined) {
+
+		client.hget("token", tokenKey, function(err, obj) {
+
+	    	if (obj == tokenValue) {
+	    		next();
+	    	} else {
+				res.send("client does not have active token");
+	    	}
+    	});
+	} else {
+		res.send("client does not have active token");
+	}
 });
 
 
@@ -64,29 +80,33 @@ router.route('/employees')
 	//get all employees
 	.get(function(req, res) {
 
-		var tokenKey = req.headers.tokenkey;
-		var tokenValue = req.headers.tokenvalue;
+		// var tokenKey = req.headers.tokenkey;
+		// var tokenValue = req.headers.tokenvalue;
 
-		if (tokenKey !== undefined && tokenValue !== undefined) {
+		// if (tokenKey !== undefined && tokenValue !== undefined) {
 
-			client.hget("token", tokenKey, function(err, obj) {
+		// 	client.hget("token", tokenKey, function(err, obj) {
 
-				
-
-		    	if (obj == tokenValue) {
-		    		client.hgetall("employee", function(err, obj) {
-		    		    if (err) {
-		    		        res.send(err);
-		    		    }
-		    		    res.send(obj);
-		    		});
-		    	} else {
-					res.send("client does not have active token");
-		    	}
-	    	});
-		} else {
-			res.send("client does not have active token");
-		}
+		//     	if (obj == tokenValue) {
+		//     		client.hgetall("employee", function(err, obj) {
+		//     		    if (err) {
+		//     		        res.send(err);
+		//     		    }
+		//     		    res.send(obj);
+		//     		});
+		//     	} else {
+		// 			res.send("client does not have active token");
+		//     	}
+	 //    	});
+		// } else {
+		// 	res.send("client does not have active token");
+		// }
+		client.hgetall("employee", function(err, obj) {
+		    if (err) {
+		        res.send(err);
+		    }
+		    res.send(obj);
+		});
 	});
 
 
