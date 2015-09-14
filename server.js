@@ -41,9 +41,7 @@ router.use(function(req, res, next) {
 	var tokenValue = req.headers.tokenvalue;
 
 	if (tokenKey !== undefined && tokenValue !== undefined) {
-
 		client.hget("token", tokenKey, function(err, obj) {
-
 	    	if (obj == tokenValue) {
 	    		next();
 	    	} else {
@@ -79,28 +77,6 @@ router.route('/employees')
 
 	//get all employees
 	.get(function(req, res) {
-
-		// var tokenKey = req.headers.tokenkey;
-		// var tokenValue = req.headers.tokenvalue;
-
-		// if (tokenKey !== undefined && tokenValue !== undefined) {
-
-		// 	client.hget("token", tokenKey, function(err, obj) {
-
-		//     	if (obj == tokenValue) {
-		//     		client.hgetall("employee", function(err, obj) {
-		//     		    if (err) {
-		//     		        res.send(err);
-		//     		    }
-		//     		    res.send(obj);
-		//     		});
-		//     	} else {
-		// 			res.send("client does not have active token");
-		//     	}
-	 //    	});
-		// } else {
-		// 	res.send("client does not have active token");
-		// }
 		client.hgetall("employee", function(err, obj) {
 		    if (err) {
 		        res.send(err);
@@ -142,21 +118,12 @@ router.route('/employees/:key')
 	        } else {
 	            res.send("employee deleted")
 	        }
-	        //res.json(obj);
 	    });
 	});
 
 router.route('/tokens/:key')
 	//get employee with key
 	.get(function(req, res) {
-        //    var tokenBoolean = isTokenActive(req.params.key, "123");
-        //   	if (tokenBoolean) {
-        //   		console.log("second yes");
-        //   		res.send("active");
-        //   	} else {
-        //   		console.log("second no");
-        //   		res.send("non-active");
-        //   	}
 
   		console.log(req.headers);
   		client.hget("token", req.params.key, function(err, obj) {
@@ -173,22 +140,6 @@ router.route('/tokens/:key')
 		console.log(req.headers.token);
 	});
 
-
-function isTokenActive(tokenKey, tokenValue) {
-    client.hget("token", tokenKey, function(err, obj) {
-    	if (obj == tokenValue) {
-    		console.log("yes");
-    		return true;
-    	} else {
-    		console.log("no");
-    		return false;
-    	}
-    });
-}
-
-function getTokenValue() {
-
-}
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
