@@ -43,33 +43,34 @@ router.get('/', function(req, res) {
 	res.json({ message: 'hooray! welcome to our api!' });	
 });
 
-
 // on routes that end in /employees
 // ----------------------------------------------------
 router.route('/employees')
 
 	//create employee
-	.post(function(req, res) {
-		
-		client.hset("employee", req.body.name, req.body.value, redis.print);
+	.post(function(req, res) {	
+		client.hset("employee", req.query.key, req.query.value, function (err, obj) {
+			if (err) {
+				res.send(err);
+			} else {
+				res.send("employee created");
+			}
+		});
 	})
 
 	//get all employees
 	.get(function(req, res) {
 		client.hgetall("employee", function (err, obj) {
 			if (err) {
-				res.send(err)
+				res.send(err);
 			}
-			res.json(obj);
 		});
 	});
-
 
 router.route('/employees/:key')
 
 	//get employee with key
 	.get(function(req, res) {
-
 		client.hget("employee", req.params.key, function(err, obj){
 			if (err) {
 			    res.send(err);
@@ -81,14 +82,12 @@ router.route('/employees/:key')
 
 	// update employee value with key
 	.put(function(req, res) {
-
-		client.hset("employee", req.params.key, req.body.value, function(err, obj){
+		client.hset("employee", req.params.key, req.query.value, function (err, obj) {
 			if (err) {
-			    res.send(err);
+				res.send(err);
 			} else {
-				res.send("succeed");
+				res.send("description updated");
 			}
-			//res.json(obj);
 		});
 	})
 
@@ -98,11 +97,16 @@ router.route('/employees/:key')
 			if (err) {
 				res.send(err);
 			} else {
-				res.send("deleted")
+				res.send("employee deleted")
 			}
 			//res.json(obj);
 		});
 	});
+
+
+function isTokenActive (var tokenKey, var tokenValue) {
+
+}
 
 
 // REGISTER OUR ROUTES -------------------------------
