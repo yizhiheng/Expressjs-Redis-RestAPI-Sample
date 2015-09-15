@@ -1,0 +1,2 @@
+./xware_csh.sh || ./xware_bash.sh
+
