@@ -85,16 +85,16 @@ router.route('/employees')
         });
     })
 
-//get all employees
-.get(function(req, res) {
-    client.hgetall("employee", function(err, obj) {
-        if (err) {
-            res.status(500).json({
-                error: err
-            });
-        }
-        res.send(obj);
-    });
+	//get all employees
+	.get(function(req, res) {
+	    client.hgetall("employee", function(err, obj) {
+	        if (err) {
+	            res.status(500).json({
+	                error: err
+	            });
+	        }
+	        res.send(obj);
+	    });
 });
 
 

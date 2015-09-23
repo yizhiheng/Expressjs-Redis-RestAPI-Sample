@@ -1,0 +1,45 @@
+
+
+GET /api.bumpn.com/relationships/
+
+POST /api.bumpn.com/relationships/{userId}
+
+*  PUT /api.bumpn.com/relationships/{userId}/{relationshipType}/userIds={userIds...}
+
+
+
+GET /api.bumpn.com/relationships/{userId}/mutuals
+
+PUT /api.bumpn.com/relationships/{userId}/mutuals?userIds={userIds...}
+
+DELETE /api.bumpn.com/relationships/{userId}/mutuals?userIds={userIds}
+
+
+
+GET /api.bumpn.com/relationships/{userId}/pendings
+
+PUT /api.bumpn.com/relationships/{userId}/pendings?userIds={userIds...}
+
+DELETE /api.bumpn.com/relationships/{userId}/pendings?userIds={userIds}&toMutuals=true
+
+
+
+
+GET /api.bumpn.com/users/{userId}/waitings
+
+PUT /api.bumpn.com/users/{userId}/waitings?userIds={userIds}
+
+DELETE /api.bumpn.com/users/{userId}/waitings?userIds={userIds}&toMutuals=true
+
+
+api.bumpn.com/users/{userId}/
+
+{
+	"userId": "user1",
+	"relationship": {
+		"mutual": ["user2", "user3"],
+		"pending": [],
+		"waiting": [],
+		"blocked": []
+	}
+}
