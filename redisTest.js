@@ -33,6 +33,25 @@ client.on("error", function (err) {
 // });
 
 //取hash中一个field的值
-client.hget("employee", "ZhihengYi", function(err, obj){
-	console.log(obj);
+client.hget("relationship", "user1", function(err, obj){
+	var data = "user5,user10,user12,user2";
+
+	var content = JSON.parse(obj);
+
+	var mutual = content.data.mutual;
+
+	var arraydata = data.split(',');
+	console.log(mutual);
+	console.log(arraydata);
+
+	for (var i=0; i<arraydata.length; i++) {
+		if (mutual.indexOf(arraydata[i]) == -1) {
+			mutual.push(arraydata[i]);
+		}
+	} 
+	console.log(mutual);
+
 });
+
+
+

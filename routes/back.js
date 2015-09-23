@@ -135,13 +135,13 @@ router.route('/:userId/:type')
 	    	    	});
 	    	}
 
-
 	    	for (var i=0; i < userArray.length; i++) {
 	    		if (relationshipData.indexOf(userArray[i]) == -1) {
 	    			relationshipData.push(userArray[i]);
 	    		}
 	    	}
 
+	    	//console.log(obj.data[relationshipType]);
 	    	obj.data[relationshipType] = relationshipData;
 	    	console.log(obj);
 
@@ -155,6 +155,7 @@ router.route('/:userId/:type')
 	    	        message: 'Data Updated'
 	    	    });
 	    	});
+
 
 	    });  
 
