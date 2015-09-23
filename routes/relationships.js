@@ -12,26 +12,8 @@ router.route('/')
 	        }
 	        res.send(obj);
 	    });
-	})
-	.post(function(req, res) {
-		var userId = req.query.userId;
-		var data = req.query.data;
-		client.hset("relationship", userId, data, function(err, obj) {
-		    if (err) {
-		        res.status(500).json({
-		            error: err
-		        });
-		    } else if (userId === undefined || data === undefined) {
-		    	res.status(400).json({
-		    	    error: 'Params Missing'
-		    	});
-		    }
-		    res.status(201).json({
-		        message: 'Object Created'
-		    });
-		});
-
 	});
+	
 
 router.route('/:userId')
 
@@ -48,6 +30,38 @@ router.route('/:userId')
 		    }
 		    res.send(obj);
 		});
+	})
+
+	.post(function(req, res) {
+		var userId = req.params.userId;
+		var data = req.query.data;
+		if (data === undefined) {
+			data = {
+			    "userId": userId,
+			    "data": {
+			        "mutual": [],
+			        "pending": [],
+			        "waiting": [],
+			        "blocked": []
+				}
+			};
+		}
+		//console.log(data);
+		client.hset("relationship", userId, JSON.stringify(data), function(err, obj) {
+		    if (err) {
+		        res.status(500).json({
+		            error: err
+		        });
+		    } else if (userId === undefined || data === undefined) {
+		    	res.status(400).json({
+		    	    error: 'Params Missing'
+		    	});
+		    }
+		    res.status(201).json({
+		        message: 'Object Created'
+		    });
+		});
+
 	});
 
 
@@ -143,7 +157,7 @@ router.route('/:userId/:type')
 	    	}
 
 	    	obj.data[relationshipType] = relationshipData;
-	    	console.log(obj);
+	    	//console.log(obj);
 
 	    	client.hset("relationship", userId, JSON.stringify(obj), function(err) {
 	    	    if (err) {
@@ -159,8 +173,6 @@ router.route('/:userId/:type')
 	    });  
 
 	});
-
-
 
 router.route('/relationships/:userId/:type').delete(function(req, res) {
 	var userList;
