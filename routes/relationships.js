@@ -33,6 +33,7 @@ router.route('/:userId')
 	})
 
 	.post(function(req, res) {
+		
 		var userId = req.params.userId;
 		var data = req.query.data;
 		if (data === undefined) {
@@ -46,7 +47,7 @@ router.route('/:userId')
 				}
 			};
 		}
-		//console.log(data);
+
 		client.hset("relationship", userId, JSON.stringify(data), function(err, obj) {
 		    if (err) {
 		        res.status(500).json({

@@ -20,7 +20,8 @@ GET /api.bumpn.com/relationships/{userId}/pendings
 
 PUT /api.bumpn.com/relationships/{userId}/pendings?userIds={userIds...}
 
-DELETE /api.bumpn.com/relationships/{userId}/pendings?userIds={userIds}&toMutuals=true
+
+DELETE /api.bumpn.com/relationships/{userId}/pendings?userList={userIds}&toMutuals=true
 
 
 
