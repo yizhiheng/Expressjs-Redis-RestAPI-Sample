@@ -16,11 +16,11 @@ Examples:
 		Haven't done yet.
 
 	-	POST: create a new user, and create 3 relationship sets automaticly
+		
 		Demo Request: POST: /api/relationships/user1 
+		
 		Retuen Value: 
-		```
-			["user4", "user3", "user2"]
-		```
+		```["user4", "user3", "user2"]```
 
 - /api/relationships/:userId/:type
 	-	GET: get the specific type relationship data of one user
