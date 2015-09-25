@@ -22,9 +22,7 @@ router.route('/:userId')
 
 	//Create a new user, set up three sets to store his relationships data
 	.post(function(req, res) {
-
 		var userId = req.params.userId;
-
 		multi = client.multi();
 		multi.sadd(userId + "_mutual", "placeholder");
 		multi.sadd(userId + "_pending", "placeholder");
@@ -98,7 +96,6 @@ router.route('/:userId/:type')
 	    	        error: err
 	    	    });
 	    	}
-
 	        res.status(201).json({
 	            message: 'Data Updated'
 	        });
@@ -107,19 +104,22 @@ router.route('/:userId/:type')
 
 
 router.route('/:userId/:type/:opt')
+	//user1/pending/toMutual?userList=user1,user2
 	.put(function(req, res) {
 		var userId = req.params.userId;
 		var optName = req.params.opt;
 		var userList = req.query.userList;
-		var relationshipType = req.params.type;
+		var relationshipType = req.params.type;	
 		//Here needs some verification! I will come back here later
 		if (userList === undefined) {
 			res.status(400).json({
 			    error: 'Params Missing'
 			});
 		}
+
 		if (optName == "toMutual") {
 			multi = client.multi();
+
 			var userArray = userList.split(',');
 			for (var i = 0; i < userArray.length; i++) {
 				multi.smove(userId + "_" + relationshipType, userId + "_mutual", userArray[i]);
@@ -135,6 +135,14 @@ router.route('/:userId/:type/:opt')
 			        message: 'Data Updated'
 			    });
 			});
+		}
+
+		if (optName == "find") {
+
+		}
+
+		if (optName == "...") {
+
 		}
 
 	});
