@@ -137,14 +137,6 @@ router.route('/:userId/:type/:opt')
 			});
 		}
 
-		if (optName == "find") {
-
-		}
-
-		if (optName == "...") {
-
-		}
-
 	});
 
 
