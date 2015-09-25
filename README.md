@@ -14,7 +14,7 @@ Examples:
 - /api/relationships/:userId
 	-	GET: get all relationship data for a user
 		- Haven't done yet.
-	-	POST: create a new user, and create 3 relationship sets automaticly
+	-	POST: create a new user, and create 3 relationship sets automatically
 		- Notice: If the user is already in the database, this api will erase all relationship data of this user
 		- Usage: ```POST: /api/relationships/:userId```			
 		- Demo Request: ```POST: /api/relationships/user1``` 
