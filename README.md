@@ -6,7 +6,9 @@ Implemented basic REST API. Built with Express.js. Used Redis for data persisten
 
 ###Connection
 Description: The token info needs to be added to headers of http request.
+
 Examples: 
+
 
 ###Events
 - /api/relationships/:userId
@@ -16,6 +18,13 @@ Examples:
 	-	POST: create a new user, and create 3 relationship sets automaticly
 		Demo Request: POST: /api/relationships/user1 
 		Retuen Value: 
+		```
+			[
+			  "user4",
+			  "user3",
+			  "user2"
+			]
+		```
 
 - /api/relationships/:userId/:type
 	-	GET: get the specific type relationship data of one user
