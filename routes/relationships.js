@@ -4,60 +4,38 @@ var client = require('../redisClient');
 
 router.route('/')
 	.get(function(req, res) {
-		client.hgetall("relationship", function(err, obj) {
-	        if (err) {
-	            res.status(500).json({
-	                error: err
-	            });
-	        }
-	        res.send(obj);
-	    });
+		res.status(200).json({
+		    message: 'Do we need this API?'
+		});
 	});
 	
 
 router.route('/:userId')
 
 	.get(function(req, res) {
-		client.hget("relationship", req.params.userId, function(err, obj) {
-		    if (err) {
-		        res.status(500).json({
-		            error: err
-		        });
-		    } else if (obj === undefined){
-		        res.status(204).json({
-		            error: 'Not Found'
-		        });
-		    }
-		    res.send(obj);
+		var userId = req.params.userId;
+		res.status(200).json({
+		    message: 'Do we need this API?'
 		});
+
 	})
 
+	//Create a new user, set up three sets to store his relationships data
 	.post(function(req, res) {
-		
-		var userId = req.params.userId;
-		var data = req.query.data;
-		if (data === undefined) {
-			data = {
-			    "userId": userId,
-			    "data": {
-			        "mutual": [],
-			        "pending": [],
-			        "waiting": [],
-			        "blocked": []
-				}
-			};
-		}
 
-		client.hset("relationship", userId, JSON.stringify(data), function(err, obj) {
-		    if (err) {
-		        res.status(500).json({
+		var userId = req.params.userId;
+
+		multi = client.multi();
+		multi.sadd(userId + "_mutual", "placeholder");
+		multi.sadd(userId + "_pending", "placeholder");
+		multi.sadd(userId + "_waiting", "placeholder");
+		// drains multi queue and runs atomically
+		multi.exec(function (err, replies) {
+			if (err) {
+				res.status(500).json({
 		            error: err
 		        });
-		    } else if (userId === undefined || data === undefined) {
-		    	res.status(400).json({
-		    	    error: 'Params Missing'
-		    	});
-		    }
+			}
 		    res.status(201).json({
 		        message: 'Object Created'
 		    });
@@ -71,38 +49,29 @@ router.route('/:userId/:type')
 	.get(function(req, res) {
 		var userId = req.params.userId;
 		var relationshipType = req.params.type;
-		client.hget("relationship", req.params.userId, function(err, content) {
-			if (err) {
-			    res.status(500).json({
-			        error: err
-			    });
-			} else if (content === undefined){
-			    res.status(204).json({
-			        error: 'Not Found'
-			    });
-			}
-			var obj = JSON.parse(content);
-			var resData;
-			switch(relationshipType) {
-			    case 'mutual':
-			        resData = obj.data.mutual;
-			        break;
-			    case 'pending':
-			        resData = obj.data.pending;
-			        break;
-			    case 'waiting':
-			     	resData = obj.data.waiting;
-			        break;
-		        case 'blocked':
-		            resData = obj.data.blocked;
-		            break;
-			    default:
-			        res.status(400).json({
-			    	    error: 'Wrong Params'
-			    	});
-			}
-			res.send(resData);
-		});
+		var setName = userId + "_" + relationshipType;
+		var acceptableTypes = ['mutual', 'pending', 'waiting'];
+
+		if (acceptableTypes.indexOf(relationshipType) !== -1) {
+			client.smembers(setName, function(err, content) {
+				console.log(content);
+				if (err) {
+				    res.status(500).json({
+				        error: err
+				    });
+				} else if (content === undefined){
+				    res.status(204).json({
+				        error: 'Not Found'
+				    });
+				}
+
+				res.send(content);
+			});
+		} else {
+	        res.status(400).json({
+	    	    error: 'Wrong Params'
+	    	});
+		}
 	})
 
 	.put(function(req, res) {
@@ -110,75 +79,80 @@ router.route('/:userId/:type')
 		var relationshipType = req.params.type;
 	    var userList = req.query.userList;
 	    
+	    //Here needs some verification! I will come back here later
 	    if (userList === undefined) {
 	    	res.status(400).json({
 	    	    error: 'Params Missing'
 	    	});
 	    }
 
+	    multi = client.multi();
+
 	    var userArray = userList.split(',');
-	    var relationshipData;
-	    client.hget("relationship", req.params.userId, function(err, content) {
-	    	//Get the data
+	    for (var i = 0; i < userArray.length; i++) {
+	    	multi.sadd(userId + "_" + relationshipType, userArray[i]);
+	    }
+	    multi.exec(function (err, replies) {
 	    	if (err) {
 	    	    res.status(500).json({
 	    	        error: err
 	    	    });
-	    	} else if (content === undefined){
-	    	    res.status(204).json({
-	    	        error: 'Not Found'
-	    	    });
-	    	}
-	    	
-	    	var obj = JSON.parse(content);
-	    	switch(relationshipType) {
-	    	    case 'mutual':
-	    	        relationshipData = obj.data.mutual;
-	    	        break;
-	    	    case 'pending':
-	    	        relationshipData = obj.data.pending;
-	    	        break;
-	    	    case 'waiting':
-	    	     	relationshipData = obj.data.waiting;
-	    	        break;
-	            case 'blocked':
-	                relationshipData = obj.data.blocked;
-	                break;
-	    	    default:
-	    	        res.status(400).json({
-	    	    	    error: 'Wrong Params'
-	    	    	});
 	    	}
 
+	        res.status(201).json({
+	            message: 'Data Updated'
+	        });
+	    });
+	});
 
-	    	for (var i=0; i < userArray.length; i++) {
-	    		if (relationshipData.indexOf(userArray[i]) == -1) {
-	    			relationshipData.push(userArray[i]);
-	    		}
-	    	}
 
-	    	obj.data[relationshipType] = relationshipData;
-	    	//console.log(obj);
+router.route('/:userId/:type/:opt')
+	.put(function(req, res) {
+		var userId = req.params.userId;
+		var optName = req.params.opt;
+		var userList = req.query.userList;
+		var relationshipType = req.params.type;
+		//Here needs some verification! I will come back here later
+		if (userList === undefined) {
+			res.status(400).json({
+			    error: 'Params Missing'
+			});
+		}
+		if (optName == "toMutual") {
+			multi = client.multi();
+			var userArray = userList.split(',');
+			for (var i = 0; i < userArray.length; i++) {
+				multi.smove(userId + "_" + relationshipType, userId + "_mutual", userArray[i]);
+			}
+			multi.exec(function (err, replies) {
+				if (err) {
+				    res.status(500).json({
+				        error: err
+				    });
+				}
 
-	    	client.hset("relationship", userId, JSON.stringify(obj), function(err) {
-	    	    if (err) {
-	    	        res.status(500).json({
-	    	            error: err
-	    	        });
-	    	    } 
-	    	    res.status(201).json({
-	    	        message: 'Data Updated'
-	    	    });
-	    	});
-
-	    });  
+			    res.status(201).json({
+			        message: 'Data Updated'
+			    });
+			});
+		}
 
 	});
 
-router.route('/relationships/:userId/:type').delete(function(req, res) {
-	var userList;
-    var toMutual = false;
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
 
