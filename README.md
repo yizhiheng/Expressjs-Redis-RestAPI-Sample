@@ -19,11 +19,7 @@ Examples:
 		Demo Request: POST: /api/relationships/user1 
 		Retuen Value: 
 		```
-			[
-			  "user4",
-			  "user3",
-			  "user2"
-			]
+			["user4", "user3", "user2"]
 		```
 
 - /api/relationships/:userId/:type
