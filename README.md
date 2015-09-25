@@ -9,7 +9,6 @@ Description: The token info needs to be added to headers of http request.
 
 Examples: 
 
-
 ###Events
 - /api/relationships/:userId
 	-	GET: get all relationship data for a user
@@ -22,35 +21,24 @@ Examples:
 		- Demo Request: ```POST: /api/relationships/user1``` 
 		- Retuen Value: ```{ "message": "Object Created"}```
 			
-			
-
 - /api/relationships/:userId/:type
-	-	GET: get the specific type relationship data of one user
-		Usage: ```/api/relationships/:userId/:type```
-
-		Demo Request: ```/api/relationships/user1/mutual```
-		
-		Return Value: ```["user4", "user3", "user2"]```
-		
-	-	PUT: update specific type of relationship data for one user, Param userList is required
-		Usage: ```/api/relationships/:userId/:type?userList={users}```
-
-		Notice: Single or mutiple users are accpetable. Users are separate by comma(,)
-		
-		Demo Request: ```/api/relationships/user1/pending?userList=user4,user5```
-		
-		Return Value: ```{"message": "Data Updated"}```
-		
-	-	DELETE: delete some users in a specific relationship set
-		
-		Haven't done yet.
-	
-		Usage: ```/api/relationships/:userId/:type```
-
+	- GET: get the specific type relationship data of one user
+		- Usage: ```GET: /api/relationships/:userId/:type```
+		- Demo Request: ```/api/relationships/user1/mutual```
+		- Return Value: ```["user4", "user3", "user2"]```
+	- PUT: update specific type of relationship data for one user, Param userList is required
+		- Usage: ```PUT: /api/relationships/:userId/:type?userList={users}```
+		- Notice: Single or mutiple users are accpetable. Users are separate by comma(,)
+		- Demo Request: ```/api/relationships/user1/pending?userList=user4,user5```
+		- Return Value: ```{"message": "Data Updated"}```
+	- DELETE: delete some users in a specific relationship set
+		- Notice: Haven't done yet.
+		- Usage: ```DELETE: /api/relationships/:userId/:type```
 
 - /api/relationship/:userId/:type/:opt
-	-	PUT: perform opreation for a specific type of relationship data
+	- PUT: perform opreation for a specific type of relationship data
+		- Usage: ```PUT: /api/relationships/:userId/:type/:opt```
+		- Demo Request: ```/api/relationships/user1/pending/toMutual?userList=user2,user3```
+		- Return Value: ```{"message": "Data Updated"}```
 
-###Requirements
-Node.js, Expressjs, Redis
 
