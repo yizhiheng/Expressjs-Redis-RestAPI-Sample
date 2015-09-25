@@ -8,7 +8,7 @@ Implemented basic REST API. Built with Express.js. Used Redis for data persisten
 Description: The token info needs to be added to headers of http request.
 
 Examples: 
-![alt tag](https://raw.github.com/yizhiheng/Expressjs-Redis-RestAPI-Sample/master/screenshots/token.png)
+![alt tag](https://raw.githubusercontent.com/yizhiheng/Expressjs-Redis-RestAPI-Sample/master/screenshots/token.png?token=ADptWB82k59F_mnC4NCDXQT1Y4Zlk3Kzks5WDrDawA%3D%3D)
 
 ###Events
 - /api/relationships/:userId
